@@ -1,0 +1,41 @@
+Using username "pi".
+Authenticating with public key "rsa-key-20211122"
+Linux node01 5.10.63-v7+ #1459 SMP Wed Oct 6 16:41:10 BST 2021 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Dec 14 20:08:24 2021 from 24.114.86.130
+
+Wi-Fi is currently blocked by rfkill.
+Use raspi-config to set the country before use.
+
+pi@node01:~ $ cd /clusterfs
+pi@node01:/clusterfs $ nano pi.c
+pi@node01:/clusterfs $ srun --pty bash
+pi@node02:/clusterfs $ cd /clusterfs
+pi@node02:/clusterfs $ mpicxx pi.c
+pi@node02:/clusterfs $ exit
+exit
+pi@node01:/clusterfs $ nano sub_mpi_pi.sh
+pi@node01:/clusterfs $ sbatch --nodes=3 --ntasks-per-node=1 sub_mpi_pi.sh
+Submitted batch job 244
+pi@node01:/clusterfs $ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REA                                                                                                             SON)
+               244 mycluster sub_mpi_       pi  R       0:01      3 node[02-04]
+pi@node01:/clusterfs $ ls
+a.out                             lab4_sub.sh  slurm-228.out  slurm-73.out
+calc-pi                           lab7.cpp     slurm-230.out  slurm-82.out
+cgroup_allowed_devices_file.conf  lost+found   slurm-238.out  slurm.conf
+cgroup.conf                       mike.txt     slurm-240.out  sub_mpi_pi.sh
+hello_mpi.c                       munge.key    slurm-244.out  sub_mpi.sh
+helloworld.sh                     normal       slurm-60.out   usr
+helloworld.txt                    pi.c         slurm-6.out
+pi@node01:/clusterfs $ cat slurm-244.out
+Master node: node02
+pi is approximately 3.1415926544231318, Error is 0.0000000008333387
+wall clock time = 0.018314
+pi@node01:/clusterfs $
