@@ -1,0 +1,92 @@
+Using username "pi".
+Authenticating with public key "rsa-key-20211122"
+Linux node02 5.10.63-v7+ #1459 SMP Wed Oct 6 16:41:10 BST 2021 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Sun Dec  5 13:09:17 2021 from 142.169.78.210
+
+Wi-Fi is currently blocked by rfkill.
+Use raspi-config to set the country before use.
+
+pi@node02:~ $ R --version
+R version 4.0.4 (2021-02-15) -- "Lost Library Book"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: arm-unknown-linux-gnueabihf (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under the terms of the
+GNU General Public License versions 2 or 3.
+For more information about these matters see
+https://www.gnu.org/licenses/.
+
+pi@node02:~ $ cd /clusterfs/normal/
+pi@node02:/clusterfs/normal $ ls
+generate.R      slurm-8_13.out  slurm-8_18.out  slurm-8_22.out  slurm-8_27.out  slurm-8_31.out  slurm-8_36.out  slurm-8_40.out  slurm-8_45.out  slurm-8_4.out   slurm-8_8.out
+plots           slurm-8_14.out  slurm-8_19.out  slurm-8_23.out  slurm-8_28.out  slurm-8_32.out  slurm-8_37.out  slurm-8_41.out  slurm-8_46.out  slurm-8_50.out  slurm-8_9.out
+slurm-8_10.out  slurm-8_15.out  slurm-8_1.out   slurm-8_24.out  slurm-8_29.out  slurm-8_33.out  slurm-8_38.out  slurm-8_42.out  slurm-8_47.out  slurm-8_5.out   submit.sh
+slurm-8_11.out  slurm-8_16.out  slurm-8_20.out  slurm-8_25.out  slurm-8_2.out   slurm-8_34.out  slurm-8_39.out  slurm-8_43.out  slurm-8_48.out  slurm-8_6.out
+slurm-8_12.out  slurm-8_17.out  slurm-8_21.out  slurm-8_26.out  slurm-8_30.out  slurm-8_35.out  slurm-8_3.out   slurm-8_44.out  slurm-8_49.out  slurm-8_7.out
+pi@node02:/clusterfs/normal $ mkdir plots
+mkdir: cannot create directory ‘plots’: File exists
+pi@node02:/clusterfs/normal $ R --vanilla -f generate.R --args "plot1"
+
+R version 4.0.4 (2021-02-15) -- "Lost Library Book"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: arm-unknown-linux-gnueabihf (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> arg = commandArgs(TRUE)
+> samples = rep(NA, 100000)
+> for ( i in 1:100000 ){ samples[i] = mean(rexp(40, 0.2)) }
+> jpeg(paste('plots/', arg, '.jpg', sep=""))
+> hist(samples, main="", prob=T, color="darkred")
+Error in plot.new() : could not open file 'plots/plot1.jpg'
+Calls: hist -> hist.default -> plot -> plot.histogram -> plot.new
+Execution halted
+pi@node02:/clusterfs/normal $ sbatch --array=[1-50] submit.sh
+Submitted batch job 83
+pi@node02:/clusterfs/normal $ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REA                                                                                                             SON)
+pi@node02:/clusterfs/normal $ sbatch --array=[1-50] submit.sh
+Submitted batch job 133
+pi@node02:/clusterfs/normal $ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REA                                                                                                             SON)
+       133_[33-50] mycluster submit.s       pi PD       0:00      1 (Resources)
+            133_21 mycluster submit.s       pi  R       0:00      1 node02
+            133_22 mycluster submit.s       pi  R       0:00      1 node04
+            133_23 mycluster submit.s       pi  R       0:00      1 node02
+            133_24 mycluster submit.s       pi  R       0:00      1 node03
+            133_25 mycluster submit.s       pi  R       0:00      1 node04
+            133_26 mycluster submit.s       pi  R       0:00      1 node03
+            133_27 mycluster submit.s       pi  R       0:00      1 node04
+            133_28 mycluster submit.s       pi  R       0:00      1 node02
+            133_29 mycluster submit.s       pi  R       0:00      1 node03
+            133_30 mycluster submit.s       pi  R       0:00      1 node02
+            133_31 mycluster submit.s       pi  R       0:00      1 node03
+            133_32 mycluster submit.s       pi  R       0:00      1 node04
+pi@node02:/clusterfs/normal $ cd plots
+pi@node02:/clusterfs/normal/plots $ ls
+plot10.jpg  plot14.jpg  plot18.jpg  plot21.jpg  plot25.jpg  plot29.jpg  plot32.jpg  plot36.jpg  plot3.jpg   plot43.jpg  plot47.jpg  plot50.jpg  plot8.jpg
+plot11.jpg  plot15.jpg  plot19.jpg  plot22.jpg  plot26.jpg  plot2.jpg   plot33.jpg  plot37.jpg  plot40.jpg  plot44.jpg  plot48.jpg  plot5.jpg   plot9.jpg
+plot12.jpg  plot16.jpg  plot1.jpg   plot23.jpg  plot27.jpg  plot30.jpg  plot34.jpg  plot38.jpg  plot41.jpg  plot45.jpg  plot49.jpg  plot6.jpg
+plot13.jpg  plot17.jpg  plot20.jpg  plot24.jpg  plot28.jpg  plot31.jpg  plot35.jpg  plot39.jpg  plot42.jpg  plot46.jpg  plot4.jpg   plot7.jpg
+pi@node02:/clusterfs/normal/plots $
+

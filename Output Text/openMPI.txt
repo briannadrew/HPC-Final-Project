@@ -1,0 +1,31 @@
+Using username "pi".
+Authenticating with public key "rsa-key-20211122"
+Linux node01 5.10.63-v7+ #1459 SMP Wed Oct 6 16:41:10 BST 2021 armv7l
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Tue Dec 14 17:32:41 2021 from 192.168.1.254
+
+Wi-Fi is currently blocked by rfkill.
+Use raspi-config to set the country before use.
+
+pi@node01:~ $ srun --pty bash
+pi@node02:~ $ cd /clusterfs
+pi@node02:/clusterfs $ mpicc hello_mpi.c
+pi@node02:/clusterfs $ ls
+a.out                             helloworld.sh   normal         slurm-82.out
+calc-pi                           helloworld.txt  slurm-228.out  slurm.conf
+cgroup_allowed_devices_file.conf  lost+found      slurm-60.out   sub_mpi.sh
+cgroup.conf                       mike.txt        slurm-6.out    usr
+hello_mpi.c                       munge.key       slurm-73.out
+pi@node02:/clusterfs $ sbatch --nodes=3 --ntasks-per-node=2 sub_mpi.sh
+Submitted batch job 230
+pi@node02:/clusterfs $ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REA                                                                                                             SON)
+               229 mycluster     bash       pi  R       1:29      1 node02
+               230 mycluster sub_mpi.       pi  R       0:00      3 node[02-04]
+pi@node02:/clusterfs $
